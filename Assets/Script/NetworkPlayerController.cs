@@ -6,9 +6,11 @@ public class NetworkPlayerController : NetworkBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float gravity = -20f;
     [SerializeField] private float groundedGravity = -2f;
+    [SerializeField] private float jumpHeight = 8f;
 
     private CharacterController characterController;
     private float verticalVelocity;
+    private bool jumpRequested;
 
     private void Awake()
     {
@@ -27,33 +29,47 @@ public class NetworkPlayerController : NetworkBehaviour
 
         Vector2 movementInput = new Vector2(horizontalInput, verticalInput);
 
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpRequested = true;
+        }
+
         if (IsServer)
         {
-            MovePlayer(movementInput);
+            MovePlayer(movementInput, jumpRequested);
+            jumpRequested = false;
         }
         else
         {
-            MovePlayerRpc(movementInput);
+            MovePlayerRpc(movementInput, jumpRequested);
+            jumpRequested = false;
         }
     }
 
     [Rpc(SendTo.Server)]
-    private void MovePlayerRpc(Vector2 movementInput)
+    private void MovePlayerRpc(Vector2 movementInput, bool isJumping)
     {
-        MovePlayer(movementInput);
+        MovePlayer(movementInput, isJumping);
     }
 
-    private void MovePlayer(Vector2 movementInput)
+    private void MovePlayer(Vector2 movementInput, bool isJumping)
     {
-        if (characterController.isGrounded && verticalVelocity < 0f)
+        if (characterController.isGrounded)
         {
-            verticalVelocity = groundedGravity;
-        }
-        else
-        {
-            verticalVelocity += gravity * Time.deltaTime;
-        }
+            if (verticalVelocity < 0f)
+                {
+                    verticalVelocity = groundedGravity;
+                }
 
+            if (isJumping)
+                {
+                    verticalVelocity = jumpHeight;
+                }
+            else
+                {
+                    verticalVelocity += gravity * Time.deltaTime;
+                }
+        }
         Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y).normalized;
 
         Vector3 horizontalMovement = moveDirection * moveSpeed;
