@@ -1,7 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
 using System.Runtime.Serialization;
-using System.Numerics;
 
 public class NetworkPlayerHealth : NetworkBehaviour
 {
@@ -26,7 +25,10 @@ public class NetworkPlayerHealth : NetworkBehaviour
         }
         CurrentHealth.OnValueChanged += OnHealthChanged;
 
-        SpawnLocalHealthBar();
+        if (IsLocalPlayer)
+        {
+            SpawnLocalHealthBar();
+        }
     }
 
     private void SpawnLocalHealthBar()
@@ -73,12 +75,22 @@ public class NetworkPlayerHealth : NetworkBehaviour
     [ClientRpc]
     private void ShowDamageTextClientRpc(int damageAmount, UnityEngine.Vector3 playerPosition)
     {
-        if (floatingTextPrefab != null) return;
+        if (floatingTextPrefab == null)
+        {
+        floatingTextPrefab = UnityEngine.Resources.Load<UnityEngine.GameObject>("DMGTEXT");
+        }
+        if (floatingTextPrefab == null)
+        {
+            Debug.LogError($"[{gameObject.name}] Cannot spawn damage text because floatingTextPrefab is missing from the inspector slot!");
+        return;
+        }
 
         UnityEngine.Vector3 spawnPosition = playerPosition + UnityEngine.Vector3.up * 3.5f;
 
         spawnPosition += new UnityEngine.Vector3(Random.Range(-0.4f, 0.4f), Random.Range(0f, 0.3f), Random.Range(-0.4f, 0.4f));
         GameObject textInstance = Instantiate(floatingTextPrefab, spawnPosition, UnityEngine.Quaternion.identity);
+
+        textInstance.name = $"[LOCAL] Damage PopUp ({damageAmount})";
 
         if (textInstance.TryGetComponent<FloatingText>(out var floatingText))
         {

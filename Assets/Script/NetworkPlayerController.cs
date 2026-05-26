@@ -56,20 +56,18 @@ public class NetworkPlayerController : NetworkBehaviour
     {
         if (characterController.isGrounded)
         {
-            if (verticalVelocity < 0f)
-                {
-                    verticalVelocity = groundedGravity;
-                }
+            verticalVelocity = groundedGravity;
 
             if (isJumping)
-                {
-                    verticalVelocity = jumpHeight;
-                }
-            else
-                {
-                    verticalVelocity += gravity * Time.deltaTime;
-                }
+            {
+                verticalVelocity = jumpHeight;
+            }
         }
+        else
+        {
+            verticalVelocity += gravity * Time.deltaTime;
+        }
+
         Vector3 moveDirection = new Vector3(movementInput.x, 0f, movementInput.y).normalized;
 
         Vector3 horizontalMovement = moveDirection * moveSpeed;

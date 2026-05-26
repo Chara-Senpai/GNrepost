@@ -189,7 +189,7 @@ MonoBehaviour:
   moveSpeed: 5
   gravity: -9.81
   groundedGravity: -2
-  jumpHeight: 8
+  jumpHeight: 4
 --- !u!114 &4091844324709531486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,8 +295,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerHealth
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
-  floatingTextPrefab: {fileID: 8774311368198771368, guid: 55214d7ab30854b468b186ac672c7baa, type: 3}
-  healthBarPrefab: {fileID: 8774311368198771368, guid: 53e984eba1d4adc459ef35e441106563, type: 3}
+  floatingTextPrefab: {fileID: 5021629354452333855, guid: 55214d7ab30854b468b186ac672c7baa, type: 3}
+  healthBarPrefab: {fileID: 2554386972722445534, guid: 53e984eba1d4adc459ef35e441106563, type: 3}
   CurrentHealth:
     UpdateTraits:
       MinSecondsBetweenUpdates: 0

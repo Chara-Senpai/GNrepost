@@ -5,10 +5,12 @@ public class LocalHealthBar : MonoBehaviour
 {
     [SerializeField] private Image fillImage;
     private NetworkPlayerHealth targetHealth;
+    private int maxHealth;
 
     public void Setup(NetworkPlayerHealth healthScript, int maxHealth)
     {
         targetHealth = healthScript;
+        this.maxHealth = maxHealth;
 
         targetHealth.CurrentHealth.OnValueChanged += UpdateHealthBar;
         UpdateHealthVisual(targetHealth.CurrentHealth.Value, maxHealth);
@@ -22,11 +24,11 @@ public class LocalHealthBar : MonoBehaviour
         }
     }
 
-    private void UpdateHealthBar(int currentHealth, int maxHealth)
+    private void UpdateHealthBar(int previousHealth, int newHealth)
     {
         if(fillImage != null)
         {
-            fillImage.fillAmount = (float)currentHealth / maxHealth;
+            fillImage.fillAmount = (float)newHealth / maxHealth;
         }
     }
 

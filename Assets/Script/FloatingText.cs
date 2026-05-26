@@ -3,8 +3,8 @@ using TMPro;
 public class FloatingText : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI textMesh;
-    [SerializeField] private float floatSpeed = 2f;
-    [SerializeField] private float destroyText = 0.8f;
+    [SerializeField] private float floatSpeed = 0.5f;
+    [SerializeField] private float destroyText = 1.0f;
     
 
     public void SetText(string text)
@@ -21,10 +21,17 @@ public class FloatingText : MonoBehaviour
     {
         transform.Translate(Vector3.up * floatSpeed * Time.deltaTime);
 
-        if(Camera.main != null)
+        Camera gameCamera = Camera.main;
+
+        if (gameCamera == null)
         {
-            transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, 
-                                    Camera.main.transform.rotation * Vector3.up);
+            gameCamera = GameObject.FindObjectOfType<Camera>();
+        }
+
+        if (gameCamera != null)
+        {
+            transform.LookAt(transform.position + gameCamera.transform.rotation * Vector3.forward,
+                            gameCamera.transform.rotation * Vector3.up);
         }
     }
 }
